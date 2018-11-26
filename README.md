@@ -1,7 +1,7 @@
 # STAT 547M Homework 9 Repository of Rebecca Asiimwe 
 
 ## Theme: Automate Tasks and Pipelines
-[<img align ="right" src="https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/plugins/pipelines.png" width="400" height="400"/>](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/plugins/pipelines.png)
+[<img align ="right" src="https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/plugins/pipelines.png" width="450" height="400"/>](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/plugins/pipelines.png)
 
 ### Assignment overview
 
