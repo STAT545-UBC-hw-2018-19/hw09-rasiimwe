@@ -5,7 +5,7 @@
 
 ### Assignment overview
 
-<align=justify>Pipelines are common in most walks of life, digital circuits, software, transportaion, industries, sales.... pipelines are almost everywhere! Pipelines used for data analysis take inputs which go through a number of processing steps that are chained together in some way to produce the desired output. Pipelines therefore are sort of a chain of commands that can be run on one or more data sets.
+<align="justify">Pipelines are common in most walks of life, digital circuits, software, transportaion, industries, sales.... pipelines are almost everywhere! Pipelines used for data analysis take inputs which go through a number of processing steps that are chained together in some way to produce the desired output. Pipelines therefore are sort of a chain of commands that can be run on one or more data sets.
 
 "Just as we save R code in a script so we can replay analytical steps, we can also record how a series of scripts and commands work together to produce a set of analytical results. This is what we mean by automating data analysis or building an analytical pipeline." A Makefile describes a pipeline of shell commands and the interdependencies of the input and output files of those commands.</align> 
 
