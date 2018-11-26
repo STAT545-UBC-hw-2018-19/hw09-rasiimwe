@@ -10,6 +10,7 @@ Pipelines are common in most walks of life, digital circuits, software, transpor
 "Just as we save R code in a script so we can replay analytical steps, we can also record how a series of scripts and commands work together to produce a set of analytical results. This is what we mean by automating data analysis or building an analytical pipeline." A Makefile describes a pipeline of shell commands and the interdependencies of the input and output files of those commands.
 
 Benefits of using R and Make to build analytics pipelines:
+
 * Make can resume a pipeline after a failed command without needing to start over
 * Make can run independent jobs in parallel. 
 * A Makefile describes a pipeline of shell commands and the interdependencies of the input and output files of those commands. 
@@ -23,12 +24,12 @@ Benefits of using R and Make to build analytics pipelines:
 
 The goal of this activity is to create a pipeline that will
 
-obtain a large file of English words
-calculate a histogram of word lengths
-determine the most common word length
-generate a figure of this histogram
-render a R Markdown report in HTML and PDF
-.....
+* obtain a large file of English words
+* calculate a histogram of word lengths
+* determine the most common word length
+* generate a figure of this histogram
+* render a R Markdown report in HTML and PDF
+* .....
 
 
 ### For this assignment, please visit the following files :point_down::
