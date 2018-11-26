@@ -1,21 +1,25 @@
-make-activity
-=============
+# STAT 547M Homework 9 Repository of Rebecca Asiimwe 
 
-The commit history of this repository reflects what a student might do as she works through [this activity](http://stat545-ubc.github.io/automation04_make-activity.html) from [STAT 545](http://stat545-ubc.github.io). This fully developed example shows:
+## Theme: Automate Tasks and Pipelines
 
-  * How to run an R script non-interactively
-  * How to use `make`
-    - to record which files are inputs vs. intermediates vs. outputs
-    - to capture how scripts and commands convert inputs to outputs
-    - to re-run parts of an analysis that are out-of-date
-  * The intersection of R and `make`, i.e. how to
-    - run snippets of R code
-    - run an entire R script
-    - render an R Markdown document (or R script)
-  * The interface between RStudio and `make`
-  * How to use `make` from the shell
-  * How Git facilitates the process of building a pipeline
-  
-  
-  
-  [Link to hw](http://stat545.com/Classroom/assignments/hw09/hw09.html)
+### Assignment overview
+[<img align ="right" src="link" width="400" height="250"/>](link)
+
+
+&nbsp;
+
+
+#### Assignment Goals:
+
+* 
+
+
+### For this assignment, please visit the following files :point_down::
+
+|   **Homework Files**   | **Description** |
+|----------------|------------|
+|[Link to homework9](http://stat545.com/Classroom/assignments/hw09/hw09.html)|This file contains homework 9 tasks and their descriptions|
+|[README.md](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/README.md)|This readme.md file provides an overview of the ghist of this repo and provides useful pointers to key files in my homework-9 repo. Herein, are also links to past files that provide an introduction to data exploration and analysis |
+|**[Link to homework-09]()**||
+
+
