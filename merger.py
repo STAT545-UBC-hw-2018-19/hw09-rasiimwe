@@ -4,14 +4,14 @@ import sys #provides access to system based functions especially those used at t
 import csv #module to support csv file operations
 import os #supports os dependant functions
 
-path="/Users/rasiimwe/Desktop/hw09-rasiimwe/files/"
+path=" "
 os.chdir(path) #change directory to file path
 
-with open("/Users/rasiimwe/Desktop/hw09-rasiimwe/dataset_merge.txt", "w") as out_file: #open file for writing - all files should be open
+with open("dataset_merge.txt", "w") as out_file: #open file for writing - all files should be open
 	os.chdir(path)
 	for root, dirs, files in os.walk(path): #path crawl through the directory tree
 		for file in files:
-			if file.endswith(".txt"): #interested in files that end with run.txt
+			if file.endswith("f.txt"): #interested in files that end with run.txt
         			#x = os.path.join(root, file)
 				z = open(file,"r") #open the specific file
 				for i in z: # for every line
