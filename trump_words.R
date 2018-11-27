@@ -15,10 +15,10 @@ suppressPackageStartupMessages(library(repurrrsive))
 suppressPackageStartupMessages(library(tidytext))
 suppressPackageStartupMessages(library(dplyr))# for required data manipulation
 suppressPackageStartupMessages(library(stringr)) #avails string functions 
-library("tm")
-library("SnowballC")
-library("wordcloud")
-library("RColorBrewer")
+suppressPackageStartupMessages(library(tm))
+suppressPackageStartupMessages(library(SnowballC))
+suppressPackageStartupMessages(library(wordcloud))
+suppressPackageStartupMessages(library(RColorBrewer))
 
 #loading merged dataset
 trump_tweets_df<-read.csv("files/dataset_merge.txt", sep=",")
@@ -56,33 +56,42 @@ words <- tm_map(words, stripWhitespace)
 # docs <- tm_map(docs, stemDocument)
 
 #Build a term-document matrix
-dtm <- TermDocumentMatrix(words)
-m <- as.matrix(dtm)
-v <- sort(rowSums(m),decreasing=TRUE)
-d <- data.frame(word = names(v),freq=v)
-head(d, 10)
-
-set.seed(1234)
-wordcloud(words = d$word, freq = d$freq, min.freq = 1,
-					max.words=200, random.order=FALSE, rot.per=0.35, 
-					colors=brewer.pal(8, "Dark2"))
+data_matrix <- TermDocumentMatrix(words)
+mtx <- as.matrix(data_matrix)
+sort_mtx <- sort(rowSums(mtx),decreasing=TRUE)
+word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
+#head(d, 10)
 
 
+write.table(tweets2, "files/tweets.tsv",
+						sep = "\t", row.names = FALSE, quote = FALSE)
 
-tweets2 %>%
-	count(word, sort=TRUE) %>%
-	filter(substr(word, 1, 1) != '#', # omiting hashtags
-				 substr(word, 1, 1) != '@', # omiting Twitter handles
-				 n > 80) %>% # only most common words
-	mutate(word = reorder(word, n)) %>%
-	ggplot(aes(word, n)) +
-	geom_bar(stat = 'identity', fill=c("gray50")) +
-	xlab(NULL) +
-	ylab(paste('(Word count)', sep = '')) +
-	ggtitle(paste('common words in tweets')) +
-	theme(legend.position="none") +
-	coord_flip() +
-	theme_bw() +
-	theme(plot.title = element_text(hjust = 0.5))
+write.table(word_freq, "files/word_freq.tsv",
+						sep = "\t", row.names = FALSE, quote = FALSE)
+
+
+
+#set.seed(1234)
+#wordcloud(words = d$word, freq = d$freq, min.freq = 1,
+#					max.words=200, random.order=FALSE, rot.per=0.35, 
+#					colors=brewer.pal(8, "Dark2"))
+
+
+
+#tweets2 %>%
+#	count(word, sort=TRUE) %>%
+#	filter(substr(word, 1, 1) != '#', # omiting hashtags
+#				 substr(word, 1, 1) != '@', # omiting Twitter handles
+#				 n > 80) %>% # only most common words
+#	mutate(word = reorder(word, n)) %>%
+#	ggplot(aes(word, n)) +
+#	geom_bar(stat = 'identity', fill=c("gray50")) +
+#	xlab(NULL) +
+#	ylab(paste('(Word count)', sep = '')) +
+#	ggtitle(paste('common words in tweets')) +
+#	theme(legend.position="none") +
+#	coord_flip() +
+#	theme_bw() +
+#	theme(plot.title = element_text(hjust = 0.5))
 
 
