@@ -46,27 +46,24 @@ word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
 #head(d, 10)
 
 
-#write.table(tweets2, "files/tweets.tsv",
-					#	sep = "\t", row.names = FALSE, quote = FALSE)
-
 write.table(word_freq, "files/word_freq.tsv",
 						sep = "\t", row.names = FALSE, quote = FALSE)
 
+set.seed(1234)
+wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
+					max.words=200, random.order=FALSE, rot.per=0.35, 
+					colors=brewer.pal(8, "Dark2"))
 
+common_words <- tweets2 %>%
+	count(word, sort=TRUE) %>%
+	filter(substr(word, 1, 1) != '#', # omiting hashtags
+				 substr(word, 1, 1) != '@', # omiting Twitter handles
+				 n > 80) %>% # only most common words
+	mutate(word = reorder(word, n))
 
-#set.seed(1234)
-#wordcloud(words = d$word, freq = d$freq, min.freq = 1,
-#					max.words=200, random.order=FALSE, rot.per=0.35, 
-#					colors=brewer.pal(8, "Dark2"))
+write.table(common_words, "files/common_words.tsv",
+	sep = "\t", row.names = FALSE, quote = FALSE)
 
-
-
-#tweets2 %>%
-#	count(word, sort=TRUE) %>%
-#	filter(substr(word, 1, 1) != '#', # omiting hashtags
-#				 substr(word, 1, 1) != '@', # omiting Twitter handles
-#				 n > 80) %>% # only most common words
-#	mutate(word = reorder(word, n)) %>%
 #	ggplot(aes(word, n)) +
 #	geom_bar(stat = 'identity', fill=c("gray50")) +
 #	xlab(NULL) +

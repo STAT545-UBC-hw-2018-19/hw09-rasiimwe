@@ -1,9 +1,10 @@
-all: word_freq.tsv
+all: common_words.tsv
 
 clean:
-	rm -f files/dataset_merge.txt files/word_freq.tsv
+	rm -f files/dataset_merge.txt files/word_freq.tsv files/common_words.tsv
 
-word_freq.tsv: trump_words.r dataset_merge.txt
+
+common_words.tsv: trump_words.r dataset_merge.txt
 	Rscript $<
 
 dataset_merge.txt: merger.py
