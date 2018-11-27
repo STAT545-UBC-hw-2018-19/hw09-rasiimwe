@@ -1,3 +1,11 @@
+
+# Install following packages 
+install.packages("tm")  # for text mining
+install.packages("SnowballC") # for text stemming
+install.packages("wordcloud") # word-cloud generator 
+install.packages("RColorBrewer") # color palettes
+
+#load
 suppressPackageStartupMessages(library(ggplot2)) #will be required to make some plots
 suppressPackageStartupMessages(library(tidyverse)) #provides system of packages for data manipulation
 suppressPackageStartupMessages(library(purrr))#to provide tools for working with functions and vectors like map()
@@ -5,22 +13,17 @@ suppressPackageStartupMessages(library(RColorBrewer))#provide color palette
 suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(repurrrsive))
 suppressPackageStartupMessages(library(tidytext))
-
-
 suppressPackageStartupMessages(library(dplyr))# for required data manipulation
 suppressPackageStartupMessages(library(stringr)) #avails string functions 
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
 
+#loading merged dataset
+trump_tweets_df<-read.csv("files/dataset_merge.txt", sep=",")
 
-
-trump_tweets_df<-read.csv("file_1.txt", sep=",")
-
-tweets <- trump_tweets_df$Text #subseting the data to work with a small piece of it
-words <- regex <- "badly|crazy|weak|spent|strong|dumb|joke|guns|funny|dead" #common words associated with Trump tweets
-tweets <- tweets[c(2, 4, 6, 8)]
-str(tweets) #character of 4 elements
-tweets
-
-
+#creating neader dataset to work with- tweets2
 regex_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))" 
 tweets2 <- trump_tweets_df %>%
 	filter(!str_detect(Text, "^QRT")) %>%
@@ -29,10 +32,12 @@ tweets2 <- trump_tweets_df %>%
 	filter(!word %in% stop_words$word,
 				 str_detect(word, "[a-z]"))
 
+
 words <- tweets2$word
 words <- Corpus(VectorSource(words))
 inspect(words)
 
+#data cleaning
 toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
 words <- tm_map(words, toSpace, "/")
 words <- tm_map(words, toSpace, "@")
@@ -64,9 +69,6 @@ wordcloud(words = d$word, freq = d$freq, min.freq = 1,
 
 
 
-
-
-
 tweets2 %>%
 	count(word, sort=TRUE) %>%
 	filter(substr(word, 1, 1) != '#', # omiting hashtags
@@ -82,3 +84,5 @@ tweets2 %>%
 	coord_flip() +
 	theme_bw() +
 	theme(plot.title = element_text(hjust = 0.5))
+
+
