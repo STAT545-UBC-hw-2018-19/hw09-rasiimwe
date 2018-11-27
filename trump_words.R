@@ -1,9 +1,9 @@
 
 # Install following packages 
-install.packages("tm")  # for text mining
-install.packages("SnowballC") # for text stemming
-install.packages("wordcloud") # word-cloud generator 
-install.packages("RColorBrewer") # color palettes
+#install.packages("tm")  # for text mining
+#install.packages("SnowballC") # for text stemming
+#install.packages("wordcloud") # word-cloud generator 
+#install.packages("RColorBrewer") # color palettes
 
 #load
 suppressPackageStartupMessages(library(ggplot2)) #will be required to make some plots
@@ -35,25 +35,8 @@ tweets2 <- trump_tweets_df %>%
 
 words <- tweets2$word
 words <- Corpus(VectorSource(words))
-inspect(words)
+#inspect(words)
 
-#data cleaning
-toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
-words <- tm_map(words, toSpace, "/")
-words <- tm_map(words, toSpace, "@")
-words <- tm_map(words, toSpace, "\\|")
-
-##some cleaning
-#Convert the text to lower case
-words <- tm_map(words, content_transformer(tolower))
-# Remove numbers
-words <- tm_map(words, removeNumbers)
-# Remove punctuations
-words <- tm_map(words, removePunctuation)
-# Eliminate extra white spaces
-words <- tm_map(words, stripWhitespace)
-# Text stemming
-# docs <- tm_map(docs, stemDocument)
 
 #Build a term-document matrix
 data_matrix <- TermDocumentMatrix(words)
@@ -63,8 +46,8 @@ word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
 #head(d, 10)
 
 
-write.table(tweets2, "files/tweets.tsv",
-						sep = "\t", row.names = FALSE, quote = FALSE)
+#write.table(tweets2, "files/tweets.tsv",
+					#	sep = "\t", row.names = FALSE, quote = FALSE)
 
 write.table(word_freq, "files/word_freq.tsv",
 						sep = "\t", row.names = FALSE, quote = FALSE)
