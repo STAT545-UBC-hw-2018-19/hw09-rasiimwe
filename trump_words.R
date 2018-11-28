@@ -1,32 +1,34 @@
 
-# Install following packages 
+## Install required packages
+
 #install.packages("tm")  # for text mining
 #install.packages("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
-#install.packages("webshot")
-#webshot::install_phantomjs()
 
 
-#load
-suppressPackageStartupMessages(library(ggplot2)) #will be required to make some plots
-suppressPackageStartupMessages(library(tidyverse)) #provides system of packages for data manipulation
-suppressPackageStartupMessages(library(purrr))#to provide tools for working with functions and vectors like map()
-suppressPackageStartupMessages(library(RColorBrewer))#provide color palette
+## Load packages
+
+suppressPackageStartupMessages(library(ggplot2)) 
+suppressPackageStartupMessages(library(tidyverse)) 
+suppressPackageStartupMessages(library(purrr))
+suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(tibble))
 suppressPackageStartupMessages(library(repurrrsive))
 suppressPackageStartupMessages(library(tidytext))
-suppressPackageStartupMessages(library(dplyr))# for required data manipulation
-suppressPackageStartupMessages(library(stringr)) #avails string functions 
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(tm))
 suppressPackageStartupMessages(library(SnowballC))
 suppressPackageStartupMessages(library(wordcloud))
-suppressPackageStartupMessages(library(RColorBrewer))
+
+
+## Finding the Commonest words in a dataset based on frequency of occurrence
 
 #loading merged dataset
 trump_tweets_df<-read.csv("files/dataset_merge.txt", sep=",")
 
-#creating neader dataset to work with- tweets2
+#creating a neater dataset to work with
 regex_words <- "([^A-Za-z_\\d#@']|'(?![A-Za-z_\\d#@]))" 
 tweets2 <- trump_tweets_df %>%
 	filter(!str_detect(Text, "^QRT")) %>%
@@ -41,24 +43,20 @@ words <- Corpus(VectorSource(words))
 #inspect(words)
 
 
-#Build a term-document matrix
+#Building document matrix- table containing the frequency of the words
 data_matrix <- TermDocumentMatrix(words)
 mtx <- as.matrix(data_matrix)
 sort_mtx <- sort(rowSums(mtx),decreasing=TRUE)
 word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
-#head(d, 10)
 
 
-#write.table(word_freq, "files/word_freq.tsv",
-				#		sep = "\t", row.names = FALSE, quote = FALSE)
-
-
-set.seed(1234)
 cloud <- wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 					max.words=200, random.order=FALSE, rot.per=0.35, 
-					colors=brewer.pal(8, "Dark2"), size=3)
+					colors=brewer.pal(8, "Dark2"))
 #dev.copy2pdf(file="files/cloud.pdf", width = 7, height = 7) #used to render cloud
 
+
+### Representation 2
 
 common_words <- tweets2 %>%
 	count(word, sort=TRUE) %>%
@@ -67,14 +65,12 @@ common_words <- tweets2 %>%
 				 n > 80) %>% # only most common words
 	mutate(word = reorder(word, n))
 
-names(common_words)[names(common_words)=='n'] <- 'word_frequency'
+names(common_words)[names(common_words)=='n'] <- 'word_frequency' ##renaming column n to word_frequency
 
+write.table(common_words, "common_words.tsv",sep = "\t", row.names = FALSE, quote = FALSE) #writing out common_words to a tsv file
 
-
-write.table(common_words, "common_words.tsv",
-	sep = "\t", row.names = FALSE, quote = FALSE)
-
-bar_plot <- common_words %>%  ggplot(aes(word, word_frequency)) +
+#bar plot of commonest words
+(bar_plot <- common_words %>%  ggplot(aes(word, word_frequency)) +
 	geom_bar(stat = 'identity', fill=c("gray50")) +
 	xlab(NULL) +
 	ylab(paste('Word count', sep = '')) +
@@ -82,8 +78,14 @@ bar_plot <- common_words %>%  ggplot(aes(word, word_frequency)) +
 	theme(legend.position="none") +
 	coord_flip() +
 	theme_bw() +
-	theme(plot.title = element_text(hjust = 0.5))
+	theme(plot.title = element_text(hjust = 0.5)))
+ggsave("files/bar_plot.png", bar_plot) 
 
-#ggsave("files/bar_plot.png", bar_plot) 
+
+
+
+
+
+
 
 

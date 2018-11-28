@@ -11,8 +11,6 @@ output: github_document
 #install.packages("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
-#install.packages("webshot")
-#webshot::install_phantomjs()
 ```
 
 ## Load packages
@@ -29,11 +27,9 @@ suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(tm))
 suppressPackageStartupMessages(library(SnowballC))
 suppressPackageStartupMessages(library(wordcloud))
-suppressPackageStartupMessages(library(RColorBrewer))
-
 ```
 
-## Finding the Commonest words in a dataset based on frequency of occurance
+## Finding the Commonest words in a dataset based on frequency of occurrence
 
 ```{r message=FALSE, warning=FALSE}
 
