@@ -27,10 +27,9 @@ The output of `merger.py` file is [dataset_merge.txt](https://github.com/STAT545
 
 ### Please install these required packages
 ```r
-install.packages("tm")  # for text mining
-install.packages("SnowballC") # for text stemming
+install.packages("tm")  # to support text mining
+install.packages("SnowballC") # to support text stemming
 install.packages("wordcloud") # word-cloud generator 
-install.packages("RColorBrewer") # color palettes
 ```
 
 
