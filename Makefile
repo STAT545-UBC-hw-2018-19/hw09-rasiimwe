@@ -1,7 +1,7 @@
 all: report.rmd 
 
 clean:
-	rm -f files/dataset_merge.txt common_words.tsv render_bar_plot.png render_cloud_plot.pdf bar.png common_words.html report.rmd  report.html report.md output.dot output.png
+	rm -f files/dataset_merge.txt common_words.tsv render_bar_plot.png render_cloud_plot.pdf bar.png report.rmd
 
 
 report.rmd: common_words.tsv bar.png render_cloud_plot.pdf render_bar_plot.png
