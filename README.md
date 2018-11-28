@@ -9,17 +9,18 @@
 
 ### Benefits of automating analytics pipelines using R and Make:
 
-* Automation helps us reproduce previous results and recreate deleted results
-* We can rerun a pipeline with updated software or on a different dataset.
-* Make can resume a pipeline after a failed command without needing to start over
-* Make can run independent jobs in parallel. 
-* A Makefile describes a pipeline of shell commands and the interdependencies of the input and output files of those commands. 
-* A Makefile can be easily displayed as a graphical flow chart of files and shell commands, and such a visualization is a pleasing and powerful way to interpret a pipeline oneself or to communicate a pipeline to a collaborator
+* Automation helps us reproduce previous results and recreate deleted results. We can also rerun a pipeline with updated software or on a different dataset.
+* Make can resume a pipeline after a failed command without needing to start over. It als has the ability to run independent jobs in parallel. 
+* A Makefile can be easily displayed as a graphical flow chart of files and shell commands as a powerful way or interpreting and communicating pipelines.
 
 ### The developed pipeline:
-**Problem at hand:** I have a number of text files that contain words. Unfortunately, the files are disintegrated. They could have come from another pipeline as separate pieces of the same file and I would like to combine all of them into on large master file that I can use as my dataset.
+
+**Problem at hand:**
+
+I have a number of text files that contain words. Unfortunately, the files are disintegrated. They could have come from another pipeline as separate pieces of the same file and I would like to combine all of them into on large master file that I can use as my dataset.
 
 **The Pipeline**
+
 The pipeline starts with a [python component seed](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/merger.py), `merger.py` that traverses the system directory tree of the specified path and looks for files with a certain pattern. The script then takes the files and concatenates them into one (Assuming that all files from a "prior" pipeline were put in one directory)
 
 The output of `merger.py` file is [dataset_merge.txt](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/files/dataset_merge.txt). This output file is then fed into the [trump_words.R](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/trump_words.R) file that does required analyses on `dataset_merge.txt` and generates required plots as shown in the [md file](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/trump_words.md). This md file was entirely generated for visualization.
