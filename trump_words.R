@@ -4,6 +4,9 @@
 #install.packages("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
+#install.packages("webshot")
+#webshot::install_phantomjs()
+library(wordcloud)
 
 #load
 suppressPackageStartupMessages(library(ggplot2)) #will be required to make some plots
@@ -46,13 +49,16 @@ word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
 #head(d, 10)
 
 
-write.table(word_freq, "files/word_freq.tsv",
-						sep = "\t", row.names = FALSE, quote = FALSE)
+#write.table(word_freq, "files/word_freq.tsv",
+				#		sep = "\t", row.names = FALSE, quote = FALSE)
+
 
 set.seed(1234)
-wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
+cloud <- wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 					max.words=200, random.order=FALSE, rot.per=0.35, 
-					colors=brewer.pal(8, "Dark2"))
+					colors=brewer.pal(8, "Dark2"), size=3)
+dev.copy2pdf(file="cloud.pdf", width = 3, height = 3)
+
 
 common_words <- tweets2 %>%
 	count(word, sort=TRUE) %>%
@@ -61,17 +67,20 @@ common_words <- tweets2 %>%
 				 n > 80) %>% # only most common words
 	mutate(word = reorder(word, n))
 
+
 write.table(common_words, "files/common_words.tsv",
 	sep = "\t", row.names = FALSE, quote = FALSE)
 
-#	ggplot(aes(word, n)) +
-#	geom_bar(stat = 'identity', fill=c("gray50")) +
-#	xlab(NULL) +
-#	ylab(paste('(Word count)', sep = '')) +
-#	ggtitle(paste('common words in tweets')) +
-#	theme(legend.position="none") +
-#	coord_flip() +
-#	theme_bw() +
-#	theme(plot.title = element_text(hjust = 0.5))
+bar_plot <- common_words %>%  ggplot(aes(word, n)) +
+	geom_bar(stat = 'identity', fill=c("gray50")) +
+	xlab(NULL) +
+	ylab(paste('Word count', sep = '')) +
+	ggtitle(paste('common words in Trumps tweets')) +
+	theme(legend.position="none") +
+	coord_flip() +
+	theme_bw() +
+	theme(plot.title = element_text(hjust = 0.5))
+
+ggsave("bar_plot.png", bar_plot)
 
 
