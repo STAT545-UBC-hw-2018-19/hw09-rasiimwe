@@ -29,7 +29,7 @@ The output of `merger.py` file is [dataset_merge.txt](https://github.com/STAT545
 
 1. **Install python** using any of the methods specified [here](https://www.python.org) or [here](https://realpython.com/installing-python/) based on your operating system
 
-2. Change the path in the `merger.py` file: `path="/Users/rasiimwe/hw09-rasiimwe/files/"` to align with your system path
+2. Change the path in the `merger.py` file: `path="/Users/rasiimwe/hw09-rasiimwe/files/"` to align with your system environment.
 
 ### Install required packages
 ```r
