@@ -6,7 +6,7 @@
 #install.packages("RColorBrewer") # color palettes
 #install.packages("webshot")
 #webshot::install_phantomjs()
-library(wordcloud)
+
 
 #load
 suppressPackageStartupMessages(library(ggplot2)) #will be required to make some plots
@@ -57,7 +57,7 @@ set.seed(1234)
 cloud <- wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 					max.words=200, random.order=FALSE, rot.per=0.35, 
 					colors=brewer.pal(8, "Dark2"), size=3)
-#dev.copy2pdf(file="files/cloud.pdf", width = 3, height = 3) #used to render cloud
+#dev.copy2pdf(file="files/cloud.pdf", width = 7, height = 7) #used to render cloud
 
 
 common_words <- tweets2 %>%
@@ -67,11 +67,14 @@ common_words <- tweets2 %>%
 				 n > 80) %>% # only most common words
 	mutate(word = reorder(word, n))
 
+names(common_words)[names(common_words)=='n'] <- 'word_frequency'
+
+
 
 write.table(common_words, "common_words.tsv",
 	sep = "\t", row.names = FALSE, quote = FALSE)
 
-bar_plot <- common_words %>%  ggplot(aes(word, n)) +
+bar_plot <- common_words %>%  ggplot(aes(word, word_frequency)) +
 	geom_bar(stat = 'identity', fill=c("gray50")) +
 	xlab(NULL) +
 	ylab(paste('Word count', sep = '')) +
