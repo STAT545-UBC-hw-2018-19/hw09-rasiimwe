@@ -3,6 +3,9 @@ trump\_words.rmd
 Rebecca Asiimwe
 2018-11-27
 
+Which words appear commonest in a dataset?
+==========================================
+
 Install required packages
 -------------------------
 
@@ -11,8 +14,6 @@ Install required packages
 #install.packages("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
-#install.packages("webshot")
-#webshot::install_phantomjs()
 ```
 
 Load packages
@@ -31,11 +32,10 @@ suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(tm))
 suppressPackageStartupMessages(library(SnowballC))
 suppressPackageStartupMessages(library(wordcloud))
-suppressPackageStartupMessages(library(RColorBrewer))
 ```
 
-Finding the Commonest words in a dataset based on frequency of occurance
-------------------------------------------------------------------------
+Finding the commonest words in a dataset
+----------------------------------------
 
 ``` r
 #loading merged dataset
@@ -70,7 +70,7 @@ wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 
 ![](trump_words_files/figure-markdown_github/unnamed-chunk-3-1.png)
 
-Above is a word cloud that shows the most common words in the trump tweets data set. In previous work I look out for common words with certain pertterns. Here, I would like to **take any dataset and see which words appear commonest.**
+Above is a word cloud that shows the most common words in the trump tweets data set. In previous work I looked out for common words with certain patterns. Here, I would like to **take any dataset and see which words appear commonest.**
 
 ### Representation 2
 
@@ -100,4 +100,4 @@ common_words %>%  ggplot(aes(word, word_frequency)) +
 
 ![](trump_words_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
-We can also use a bar as the above to nicely represent the commonest words in a dataset.
+We can also use a bar plot as seen above to nicely represent the commonest words in a dataset.

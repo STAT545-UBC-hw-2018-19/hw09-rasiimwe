@@ -4,7 +4,7 @@ import sys #provides access to system based functions especially those used at t
 import csv #module to support csv file operations
 import os #supports os dependant functions
 
-path="/Users/rasiimwe/hw09-rasiimwe/files/"
+path="/Users/rasiimwe/hw09-rasiimwe/files/"  #change to your respective path
 os.chdir(path) #change directory to file path
 
 with open("dataset_merge.txt", "w") as out_file: #open file for writing - all files should be open

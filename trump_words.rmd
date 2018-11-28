@@ -29,8 +29,7 @@ suppressPackageStartupMessages(library(SnowballC))
 suppressPackageStartupMessages(library(wordcloud))
 ```
 
-## Finding the Commonest words in a dataset based on frequency of occurrence
-
+## Finding the commonest words in a dataset 
 ```{r message=FALSE, warning=FALSE}
 
 #loading merged dataset
@@ -64,11 +63,10 @@ wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 
 ```
 
-Above is a word cloud that shows the most common words in the trump tweets data set. In previous work I look out for common words with certain pertterns. Here, I would like to **take any dataset and see which words appear commonest.**
+Above is a word cloud that shows the most common words in the trump tweets data set. In previous work I looked out for common words with certain patterns. Here, I would like to **take any dataset and see which words appear commonest.**
 
 ### Representation 2
-
-```{r height=10, width=10}
+```{r fig.height=10, fig.width=10}
 
 common_words <- tweets2 %>%
 	count(word, sort=TRUE) %>%
@@ -93,4 +91,4 @@ common_words %>%  ggplot(aes(word, word_frequency)) +
 	theme(plot.title = element_text(hjust = 0.5))
 ```
 
-We can also use a bar as the above to nicely represent the commonest words in a dataset. 
+We can also use a bar plot as seen above to nicely represent the commonest words in a dataset. 
