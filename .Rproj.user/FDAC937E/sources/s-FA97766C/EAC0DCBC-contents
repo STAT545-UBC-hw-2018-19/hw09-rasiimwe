@@ -3,6 +3,9 @@ trump\_words.rmd
 Rebecca Asiimwe
 2018-11-27
 
+Which words appear commonest in a dataset?
+==========================================
+
 Install required packages
 -------------------------
 
@@ -97,4 +100,4 @@ common_words %>%  ggplot(aes(word, word_frequency)) +
 
 ![](trump_words_files/figure-markdown_github/unnamed-chunk-4-1.png)
 
-As seen above, we can also use a bar plot to nicely represent the commonest words in a dataset.
+We can also use a bar plot as seen above to nicely represent the commonest words in a dataset.

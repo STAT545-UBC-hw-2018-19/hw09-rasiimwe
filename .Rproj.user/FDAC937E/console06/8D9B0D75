@@ -1,0 +1,236 @@
+]0;~/Desktop/hw09-rasiimwe[?1034hMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ make cea[K[Klean
+Clean all
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all
+Build all
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ clean all
+bash: clean: command not found
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ clean all[1@m[1@a[1@k[1@e[1@ 
+Clean all
+Build all
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ nano merger.py 
+>>]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean all
+rm -f dataset_merge.txt
+./merger.py merger.py dataset_merge.txt
+Traceback (most recent call last):
+  File "./merger.py", line 11, in <module>
+    os.chdir(path)
+OSError: [Errno 2] No such file or directory: 'files'
+make: *** [dataset_merge.txt] Error 1
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean allnano merger.py pwd[Knano merger.py 
+>]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ nano merger.py [1Pmake clean all
+rm -f dataset_merge.txt
+./merger.py merger.py dataset_merge.txt
+Traceback (most recent call last):
+  File "./merger.py", line 11, in <module>
+    os.chdir(path)
+OSError: [Errno 2] No such file or directory: 'files'
+make: *** [dataset_merge.txt] Error 1
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean allnano merger.py 
+>]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ nano merger.py [1Pmake clean all
+rm -f dataset_merge.txt
+./merger.py merger.py dataset_merge.txt
+Traceback (most recent call last):
+  File "./merger.py", line 11, in <module>
+    os.chdir(path)
+OSError: [Errno 2] No such file or directory: 'files/'
+make: *** [dataset_merge.txt] Error 1
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean allnano merger.py [1Pmake clean allnano merger.py 
+>]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ nano merger.py [1Pmake clean all
+rm -f dataset_merge.txt
+./merger.py merger.py dataset_merge.txt
+Traceback (most recent call last):
+  File "./merger.py", line 8, in <module>
+    os.chdir(path) #change directory to file path
+OSError: [Errno 2] No such file or directory: '~/files/'
+make: *** [dataset_merge.txt] Error 1
+[KMOMACBOOK13:hw09-rasiimwe rasiimwe$ .
+bash: .: filename argument required
+.: usage: . filename [arguments]
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ path="files"
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd path
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd path[K[K[K[K[K[K[K[Kpwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwdd
+bash: pwdd: command not found
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ getwd
+bash: getwd: command not found
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all
+make: *** No rule to make target `all'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all[K[K[Kclea[Kn[Kan all
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean all[6Pall
+make: *** No rule to make target `all'.  Stop.
+ssh beastls[Knano make2.pyls[Kssh beast[K[K[K[K[K[K[K[K[Kma[K[Kpwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ male [K[K[Kke clear[Kn
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean[K[K[K[K[K[K build
+make: *** No rule to make target `build'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make build[K\[K[K[K[K[K
+make: *** No targets specified and no makefile found.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clear[Kn
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ clear
+[3J[H[2J]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ pwd
+/Users/rasiimwe/Desktop/hw09-rasiimwe
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ Rscript -e ''w'o'r'd'c'l'o'u'd'('w'o'r'd's' '=' 'w'o'r'd'_'f'r'e'q'$'w'o'r'd',' 'f'r'e'q' '=' 'w'o'r'd'_'f'r'e'q'$'f'r'e'q',' 'm'i'n'.'f'r'e'q' '=' '1',' 'm'a'x'.'w'o'r'd's'='2'0'0',' [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C ''r'a'n'd'o'm'.'o'r'd'e'r'='F'A'L'S'E',' 'r'o't'.'p'e'r'='0'.'3'5',' 'c'o'l'o'r's'='b'r'e'w'e'r'.'p'a'l'('8',' '"'D'a'r'k'2'"')')'
+WARNING: ignoring environment value of R_HOME
+Error in wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,  : 
+  could not find function "wordcloud"
+Execution halted
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ Rscript -e 'wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=200, rrandom.order=FALSE, rot.per=0.35, colors=brewer.pal(8, "Dark2"))'[A[C[C[C[C[C[C[C[C[C[C[C[C[Clwordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=200, [1@r[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ciwordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=200,[1@ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cbwordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=200[1@,[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Crwordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=20[1@0[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cawordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=2[C[1@0[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Crwordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words=[1@2[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cywordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.words[1@=[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C(wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.word[1@s[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C)wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.wor[1@d[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C;wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.wo[1@r[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cw);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.w[1@o[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Co);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max.[1@w[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, max[1@.[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cd);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, ma[1@x[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cc);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, m[1@a[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cl);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1, [1@m[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Co);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,[1@ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cu);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1[1@,[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cd);wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = [1@1[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C;wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq =[1@ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cl;wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq [1@=[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ci;wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq[1@ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cb;wordcloud(words = word_freq$word, freq = word_freq$freq, min.fre[1@q[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr;wordcloud(words = word_freq$word, freq = word_freq$freq, min.fr[1@e[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ca;wordcloud(words = word_freq$word, freq = word_freq$freq, min.f[1@r[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr;wordcloud(words = word_freq$word, freq = word_freq$freq, min.[1@f[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cy;wordcloud(words = word_freq$word, freq = word_freq$freq, min[1@.[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C(;wordcloud(words = word_freq$word, freq = word_freq$freq, mi[1@n[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C);wordcloud(words = word_freq$word, freq = word_freq$freq, m[1@i[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CR);wordcloud(words = word_freq$word, freq = word_freq$freq, [1@m[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CC);wordcloud(words = word_freq$word, freq = word_freq$freq,[1@ [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Co);wordcloud(words = word_freq$word, freq = word_freq$freq[1@,[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cl);wordcloud(words = word_freq$word, freq = word_freq$fre[1@q[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Co);wordcloud(words = word_freq$word, freq = word_freq$fr[1@e[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr);wordcloud(words = word_freq$word, freq = word_freq$f[1@r[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[CB);wordcloud(words = word_freq$word, freq = word_freq$[1@f[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr);wordcloud(words = word_freq$word, freq = word_freq[1@$[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ce);wordcloud(words = word_freq$word, freq = word_fre[1@q[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cw);wordcloud(words = word_freq$word, freq = word_fr[1@e[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Ce);wordcloud(words = word_freq$word, freq = word_f[1@r[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cr);wordcloud(words = word_freq$word, freq = word_[1@f[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+WARNING: ignoring environment value of R_HOME
+Error: package ‘wordcloud’ was installed by an R version with different internals; it needs to be reinstalled for use with this R version
+In addition: Warning message:
+package ‘wordcloud’ was built under R version 3.5.0 
+Execution halted
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ install.pacjages[K[K[K[K[Kkages()")")w")o")r")d")c")l")o")u")d")
+bash: syntax error near unexpected token `"wordcloud"'
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ Rscript -e wordcloud[K[K[K[K[K[K[K[K[K[K install.packages("wordcloud")
+bash: syntax error near unexpected token `('
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ R
+WARNING: ignoring environment value of R_HOME
+
+R version 3.4.3 (2017-11-30) -- "Kite-Eating Tree"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> instlal[K[K[K[Ktall.packages()")")w")o")r")d")c")l")o")u")d")
+[1mInstalling package into ‘/Users/rasiimwe/Library/R/3.5/library’
+(as ‘lib’ is unspecified)
+[0m--- Please select a CRAN mirror for use in this session ---
+Secure CRAN mirrors 
+
+ 1: 0-Cloud [https]                   2: Algeria [https]                
+ 3: Australia (Canberra) [https]      4: Australia (Melbourne 1) [https]
+ 5: Australia (Melbourne 2) [https]   6: Australia (Perth) [https]      
+ 7: Austria [https]                   8: Belgium (Ghent) [https]        
+ 9: Brazil (PR) [https]              10: Brazil (RJ) [https]            
+11: Brazil (SP 1) [https]            12: Brazil (SP 2) [https]          
+13: Bulgaria [https]                 14: Chile 1 [https]                
+15: Chile 2 [https]                  16: China (Hong Kong) [https]      
+17: China (Guangzhou) [https]        18: China (Lanzhou) [https]        
+19: China (Shanghai 1) [https]       20: China (Shanghai 2) [https]     
+21: Colombia (Cali) [https]          22: Czech Republic [https]         
+23: Denmark [https]                  24: East Asia [https]              
+25: Ecuador (Cuenca) [https]         26: Ecuador (Quito) [https]        
+27: Estonia [https]                  28: France (Lyon 1) [https]        
+29: France (Lyon 2) [https]          30: France (Marseille) [https]     
+31: France (Montpellier) [https]     32: France (Paris 2) [https]       
+33: Germany (Erlangen) [https]       34: Germany (Göttingen) [https]    
+35: Germany (Münster) [https]        36: Greece [https]                 
+37: Iceland [https]                  38: India [https]                  
+39: Indonesia (Jakarta) [https]      40: Ireland [https]                
+41: Italy (Padua) [https]            42: Japan (Tokyo) [https]          
+43: Japan (Yonezawa) [https]         44: Korea (Busan) [https]          
+45: Korea (Seoul 1) [https]          46: Korea (Ulsan) [https]          
+47: Malaysia [https]                 48: Mexico (Mexico City) [https]   
+49: Norway [https]                   50: Philippines [https]            
+51: Serbia [https]                   52: Spain (A Coruña) [https]       
+53: Spain (Madrid) [https]           54: Sweden [https]                 
+55: Switzerland [https]              56: Turkey (Denizli) [https]       
+57: Turkey (Mersin) [https]          58: UK (Bristol) [https]           
+59: UK (London 1) [https]            60: USA (CA 1) [https]             
+61: USA (IA) [https]                 62: USA (KS) [https]               
+63: USA (MI 1) [https]               64: USA (NY) [https]               
+65: USA (OR) [https]                 66: USA (TN) [https]               
+67: USA (TX 1) [https]               68: Uruguay [https]                
+69: Vietnam [https]                  70: (other mirrors)                
+
+
+Selection: 5[K61
+[1mtrying URL 'https://mirror.las.iastate.edu/CRAN/src/contrib/wordcloud_2.6.tar.gz'
+[0m[1mContent type 'application/x-gzip'[0m[1m length 42454 bytes (41 KB)
+[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m=[0m[1m
+[0m[1mdownloaded 41 KB
+
+[0m* installing *source* package ‘wordcloud’ ...
+** package ‘wordcloud’ successfully unpacked and MD5 sums checked
+** libs
+x86_64-apple-darwin13.4.0-clang++  -I/Users/rasiimwe/anaconda3/lib/R/include -DNDEBUG  -I"/Users/rasiimwe/Library/R/3.5/library/Rcpp/include" -D_FORTIFY_SOURCE=2 -mmacosx-version-min=10.9 -I/Users/rasiimwe/anaconda3/include   -fPIC  -march=core2 -mtune=haswell -mssse3 -ftree-vectorize -fPIC -fPIE -fstack-protector-strong -O2 -pipe -stdlib=libc++ -fvisibility-inlines-hidden  -fmessage-length=0 -I/Users/rasiimwe/anaconda3/include -fdebug-prefix-map==/usr/local/src/conda/- -fdebug-prefix-map==/usr/local/src/conda-prefix  -c RcppExports.cpp -o RcppExports.o
+In file included from RcppExports.cpp:4:
+In file included from /Users/rasiimwe/Library/R/3.5/library/Rcpp/include/Rcpp.h:27:
+In file included from /Users/rasiimwe/Library/R/3.5/library/Rcpp/include/RcppCommon.h:29:
+In file included from /Users/rasiimwe/Library/R/3.5/library/Rcpp/include/Rcpp/r/headers.h:59:
+In file included from /Users/rasiimwe/Library/R/3.5/library/Rcpp/include/Rcpp/platform/compiler.h:100:
+In file included from /Users/rasiimwe/anaconda3/bin/../include/c++/v1/cmath:305:
+/Users/rasiimwe/anaconda3/bin/../include/c++/v1/math.h:301:15: fatal error: 'math.h' file not found
+#include_next <math.h>
+              ^~~~~~~~
+1 error generated.
+make: *** [RcppExports.o] Error 1
+ERROR: compilation failed for package ‘wordcloud’
+* removing ‘/Users/rasiimwe/Library/R/3.5/library/wordcloud’
+* restoring previous ‘/Users/rasiimwe/Library/R/3.5/library/wordcloud’
+[1m
+[0m[1m[0m[1mThe downloaded source packages are in
+	‘/private/var/folders/0n/x02f10lx0gs0gxplldt9682h2qm09r/T/RtmpHcwyUB/downloaded_packages’[0m[1m[0m[1m
+[0m[1mWarning message:
+[0m[1mIn install.packages("wordcloud") :[0m[1m
+ [0m[1m installation of package ‘wordcloud’ had non-zero exit status
+[0m> quit()
+Save workspace image? [y/n/c]: n
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ Rscript -e install.packages("wordcloud")[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[11Pinstall.packages("wordcloud")Rscript -e 'library(wordcloud);library(RColorBrewer);wordcloud(words = word_freq$word, freq = word__freq$freq, min.freq = 1, max.words=200, random.order=FALSE, rot.per=0.35, colors=brewer.pal(8, "Dark2"))'
+WARNING: ignoring environment value of R_HOME
+Error: package ‘wordcloud’ was installed by an R version with different internals; it needs to be reinstalled for use with this R version
+In addition: Warning message:
+package ‘wordcloud’ was built under R version 3.5.0 
+Execution halted
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ male [K[K[Kke clear
+make: *** No rule to make target `clear'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clear[Kn
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ ma[K[Kmake clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clear[Kn
+make: *** No rule to make target `clean'.  Stop.
+[KMOMACBOOK13:hw09-rasiimwe rasiimwe$ clear
+[3J[H[2J]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all
+make: *** No rule to make target `all'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make
+make: *** No targets specified and no makefile found.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all
+make: *** No rule to make target `all'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ k[Kmake clear[Kn
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ [KMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make all
+make: *** No rule to make target `all'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ make clean
+make: *** No rule to make target `clean'.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ MAKE
+make: *** No targets specified and no makefile found.  Stop.
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ getwd()
+> 
+]0;~/Desktop/hw09-rasiimweMOMACBOOK13:hw09-rasiimwe rasiimwe$ 

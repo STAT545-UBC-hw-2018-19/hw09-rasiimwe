@@ -1,20 +1,14 @@
----
-title: "trump_words.rmd"
-author: "Rebecca Asiimwe"
-date: '2018-11-27'
-output: github_document
----
 
 ## Install required packages
-```{r}
+
 #install.packages("tm")  # for text mining
 #install.packages("SnowballC") # for text stemming
 #install.packages("wordcloud") # word-cloud generator 
 #install.packages("RColorBrewer") # color palettes
-```
+
 
 ## Load packages
-```{r message=FALSE, warning=FALSE}
+
 suppressPackageStartupMessages(library(ggplot2)) 
 suppressPackageStartupMessages(library(tidyverse)) 
 suppressPackageStartupMessages(library(purrr))
@@ -27,10 +21,9 @@ suppressPackageStartupMessages(library(stringr))
 suppressPackageStartupMessages(library(tm))
 suppressPackageStartupMessages(library(SnowballC))
 suppressPackageStartupMessages(library(wordcloud))
-```
 
-## Finding the commonest words in a dataset 
-```{r message=FALSE, warning=FALSE}
+
+## Finding the Commonest words in a dataset based on frequency of occurrence
 
 #loading merged dataset
 trump_tweets_df<-read.csv("files/dataset_merge.txt", sep=",")
@@ -57,16 +50,13 @@ sort_mtx <- sort(rowSums(mtx),decreasing=TRUE)
 word_freq <- data.frame(word = names(sort_mtx),freq=sort_mtx)
 
 
-wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
+cloud <- wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 					max.words=200, random.order=FALSE, rot.per=0.35, 
 					colors=brewer.pal(8, "Dark2"))
+#dev.copy2pdf(file="files/cloud.pdf", width = 7, height = 7) #used to render cloud
 
-```
-
-Above is a word cloud that shows the most common words in the trump tweets data set. In previous work I looked out for common words with certain patterns. Here, I would like to **take any dataset and see which words appear commonest.**
 
 ### Representation 2
-```{r fig.height=10, fig.width=10}
 
 common_words <- tweets2 %>%
 	count(word, sort=TRUE) %>%
@@ -80,7 +70,7 @@ names(common_words)[names(common_words)=='n'] <- 'word_frequency' ##renaming col
 write.table(common_words, "common_words.tsv",sep = "\t", row.names = FALSE, quote = FALSE) #writing out common_words to a tsv file
 
 #bar plot of commonest words
-common_words %>%  ggplot(aes(word, word_frequency)) +
+(bar_plot <- common_words %>%  ggplot(aes(word, word_frequency)) +
 	geom_bar(stat = 'identity', fill=c("gray50")) +
 	xlab(NULL) +
 	ylab(paste('Word count', sep = '')) +
@@ -88,7 +78,14 @@ common_words %>%  ggplot(aes(word, word_frequency)) +
 	theme(legend.position="none") +
 	coord_flip() +
 	theme_bw() +
-	theme(plot.title = element_text(hjust = 0.5))
-```
+	theme(plot.title = element_text(hjust = 0.5)))
+ggsave("files/bar_plot.png", bar_plot) 
 
-As seen above, we can also use a bar plot to nicely represent the commonest words in a dataset. 
+
+
+
+
+
+
+
+

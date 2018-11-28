@@ -1,0 +1,957 @@
+---
+title: "Downstream_analysis, TNBC-85 "
+author: "Becky"
+date: "February 20, 2018"
+output: 
+  github_document:
+    toc: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+### Loading required packages
+
+```{r, message=FALSE}
+suppressPackageStartupMessages(library(RPostgreSQL))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(splitstackshape))
+suppressPackageStartupMessages(library(RPostgreSQL))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(reshape2))
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(cowplot))
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(cowplot))
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(gsubfn))
+suppressPackageStartupMessages(library(survival))
+suppressPackageStartupMessages(library(survminer))
+```
+
+### DB connection - remote call
+
+connected to db on the beast using ssh tunnelling on port 5433: 
+run: ssh -L 5433:localhost:5432 rasiimwe@beast.cluster.bccrc.ca / shahlab17  #depends on local config
+
+```{r}
+pw <- {
+  " "
+  }
+drv <- dbDriver("PostgreSQL")
+con <- dbConnect(drv, dbname = "genomic_variants",
+                 host = "localhost", port = 5433,
+                user = "rasiimwe", password = pw)
+#on.exit(dbDisconnect(con))
+```
+
+### Distribution of SNVs, SVs and Indels
+
+#### Intersection query :- museq snvs and strelka snvs - no filtering during intersection incase user needs pr>0.85
+
+create table snvs_intersect as select m.tumour_id, m.chrom, m.pos, m.ref, m.alt, m.pr, m.tc, m.tr, m.ta, m.nr, m.na, m.nd, m.ni, m.allele, m.annotation, m.annotation_impact, m.gene_name, m.gene_id, m.feature_type, m.feature_id, m.transcript_biotype, m.rank, m.hgvs_c, m.hgvs_p, m.cdna_pos_cdna_length, m.cds_pos_cds_length, m.aa_pos_aa_length, m.distance, m.errors_warnings_info, m.lof, m.nmd, m.ma, m.dbsnp, m.x1000gen, m.cosmic from museq_unfiltered m, strelka_snvs s where m.tumour_id = s.tumour_id and m.chrom = s.chrom  and m.pos = s.pos;  
+
+alter table snvs_intersect alter COLUMN pr set data TYPE float USING (pr::float);
+
+```{r, fig.width=10, fig.height=10}
+#data loading
+snvs <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) as snvs, ROW_NUMBER () OVER (ORDER BY 2) from snvs_intersect where pr >=0.9 group by 1 order by 2")
+breakpoints <- dbGetQuery(con, "select distinct tumour_id, count(tumour_id) as svs from destruct_breakpoints group by 1 order by 2")
+indels <- dbGetQuery(con, "select distinct tumour_id, count(tumour_id) as indels from strelka_indels group by tumour_id order by 2")
+
+snvs <- as.data.frame(snvs)
+breakpoints <- as.data.frame(breakpoints)
+indels <- as.data.frame(indels)
+
+total1 <- full_join(snvs, breakpoints, by="tumour_id")
+total <- full_join(total1, indels, by="tumour_id")
+total[is.na(total)] <- 0 #3 samples missing sv data - converting NAs to 0 
+total <- mutate(total, total_load=(snvs+svs+indels))
+
+total <- as.data.frame(total)
+total$tumour_id <- as.factor(total$tumour_id)
+
+
+
+
+total2 <- melt(total) 
+order <- fct_reorder(total2$tumour_id, total2$variable=="snvs") %>% 
+  levels()
+
+total %>% 
+  mutate(position==fct_reorder(tumour_id, snvs))
+
+total2 %>% 
+  ggplot(aes(reorder(tumour_id, value),order)) + geom_bar(stat="identity")+ facet_grid(rows = vars(variable))+theme_bw()+labs(y="value", x=" ")+
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=total$tumour_id)
+
+
+
+p1 <- total %>% 
+  ggplot(aes(reorder(tumour_id, snvs), snvs)) + geom_bar(stat = "identity") +theme_bw()+labs(y="snvs_load", x=" ")+
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=total$tumour_id)
+
+p2 <- total %>% 
+  ggplot(aes(tumour_id, svs)) + geom_bar(stat = "identity") +theme_bw()+labs(y="svs_load",  x=" ")+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=total$tumour_id)
+
+p3 <- total %>% 
+  ggplot(aes(tumour_id, indels)) + geom_bar(stat = "identity") +theme_bw()+labs(y="indel_load",  x=" ")+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=total$tumour_id)
+
+p4 <- total %>% 
+  ggplot(aes(tumour_id, total_load)) + geom_bar(stat = "identity") +theme_bw()+labs(y="total_load")+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=total$tumour_id)+labs(x = "")
+
+
+grid <- plot_grid(p1, p2,p3,p4, nrow=4)
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/mutation_loads.pdf", plot=grid,width=10, height=10, device="pdf")
+```
+
+### Rearrangment distributions (Inversions, Duplications, Transalocations, Deletions)
+
+```{r}
+
+duplications <- dbGetQuery(con, "select distinct tumour_id, type, count(tumour_id) from destruct_breakpoints where type = 'duplication' group by 1, 2")
+deletions <- dbGetQuery(con, "select distinct tumour_id, type, count(tumour_id)  from destruct_breakpoints where type = 'deletion' group by 1, 2")
+translocations <- dbGetQuery(con, "select distinct tumour_id, type, count(tumour_id)  from destruct_breakpoints where type = 'translocation' group by 1, 2")
+inversions <- dbGetQuery(con, "select distinct tumour_id, type, count(tumour_id)  from destruct_breakpoints where type = 'inversion' group by 1, 2")
+
+duplications <- as.data.frame(duplications)
+deletions <- as.data.frame(deletions)
+translocations <- as.data.frame(translocations)
+inversions <- as.data.frame(inversions)
+
+all_breakpoints <- rbind(duplications, deletions, translocations, inversions) 
+all_breakpoints2 <- full_join(duplications, deletions, by="tumour_id") 
+all_breakpoints3 <- full_join(all_breakpoints2, translocations, by="tumour_id") 
+all_breakpoints4 <- full_join(all_breakpoints3, inversions, by="tumour_id") 
+
+
+all_breakpoints <- as.data.frame(all_breakpoints)
+all_breakpoints4 <- as.data.frame(all_breakpoints4)
+
+all_breakpoints4 <- all_breakpoints4 %>% rename(duplications=count.x,
+                                                deletions=count.y,
+                                                translocations=count.x.x,
+                                                inversions=count.y.y)
+all_breakpoints4$type.x <- NULL
+all_breakpoints4$type.y <- NULL
+all_breakpoints4$type.x.x <- NULL
+all_breakpoints4$type.y.y <- NULL
+all_breakpoints4 <- as.data.frame(all_breakpoints4)
+all_breakpoints5 <- t(all_breakpoints4)
+
+colourCount = length(unique(mtcars$hp))
+getPalette = colorRampPalette(brewer.pal(9, "Set1"))
+
+
+#proportions per sample
+sv_props<- all_breakpoints %>% 
+  ggplot(aes(tumour_id,count,fill = type)) + 
+  geom_bar(aes(), position="fill",stat = "identity") +theme_bw()+labs(y="proportions")+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=all_breakpoints$tumour_id)+ 
+theme(legend.position="bottom")+scale_fill_manual(values = alpha(c("sienna2", "#FDCD7E", "#CCE9F2", "#6EA5CD",  .2)))+labs(x="")+ scale_y_continuous(labels = function(x) paste0(x*100, "%"))
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/sv_props.pdf", plot=sv_props,width=10, height=3, device="pdf")
+
+
+#svs boxplot
+box_svs <- all_breakpoints %>% 
+  ggplot(aes(reorder(type, count),count)) +
+  geom_boxplot()+ #geom_boxplot(fill=c("sienna2","#6EA5CD", "#FDCD7E","#CCE9F2"))+
+  theme_bw()+
+  geom_jitter(alpha=0.2)+
+  labs(y="Value", x="")+
+  theme(plot.title = element_text(hjust = 0.5))+scale_y_continuous()
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/svs_box.pdf", plot=box_svs,width=5, height=5, device="pdf")
+
+
+#barplot all - facet
+facet_svs <- all_breakpoints %>% 
+  ggplot(aes(reorder(tumour_id, count),count))+ 
+  facet_grid(~ type, scales="free_x")+
+  geom_bar(stat="identity") +
+ scale_size_area()+theme_bw()+
+  scale_fill_manual(values= c("black","gray70", "firebrick", "deepskyblue2"))+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank()) +labs(y="Value", x="")
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/svs_facet.pdf", plot=facet_svs,width=7, height=3, device="pdf")
+
+all_breakpoints %>% 
+  ggplot(aes(reorder(tumour_id, count, fill = type),count)) + 
+  geom_bar(stat="identity") +
+  facet_wrap(~ type) +
+  scale_fill_manual(values = c("black","gray70", "firebrick", "deepskyblue2")) +
+  labs(y="", x="Value") +
+  theme_bw() 
+ 
+
+#all_breakpoints %>% 
+  #ggplot(aes(count))+ 
+  #facet_wrap(~type, scales="free_x")+
+  #geom_histogram(aes(y=..density..),bins=50)+
+  #scale_size_area()+theme_bw()
+
+#bar plot of overall sv distribution
+bar_all_breakpoints<- all_breakpoints %>% 
+  ggplot(aes(reorder(type, count),count)) +
+  geom_col(color="gray35")+
+  theme_bw()+
+  labs(y="Value")+
+  theme(plot.title = element_text(hjust = 0.5))+labs(x="")
+ ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/bar_all_breakpoints.pdf", plot=bar_all_breakpoints,width=7, height=4, device="pdf")
+ 
+#similar to facet with color
+multi_bar_svs<- all_breakpoints %>% 
+  ggplot(aes(tumour_id, count, fill=type))+
+  geom_bar(stat='identity')+
+  facet_grid(~type, scale='free_x')+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x="")
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/multi_bar_svs.pdf", plot=multi_bar_svs,width=7, height=3, device="pdf")
+
+
+top_row <- plot_grid(bar_all_breakpoints,facet_svs , labels = c('A', 'B'),rel_widths = c(1,1), rel_heights = c(1,1))
+svs_by_grid <- plot_grid(top_row,sv_props,  labels = c('', 'C'), ncol = 1)
+
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/svs/svs_by_grid.pdf", plot=svs_by_grid,width=9, height=5, device="pdf")
+
+
+```
+
+### Normal contamination and average tumour_ploidy estimates
+
+```{r}
+
+titan_params <- dbGetQuery(con, " select * from titan_params")
+titan_params <- as.data.frame(titan_params)
+
+titan_params$normal_contamination_estimate <- as.numeric(titan_params$normal_contamination_estimate)
+titan_params$average_tumour_ploidy_estimate <- as.numeric(titan_params$average_tumour_ploidy_estimate)
+
+contamination <- titan_params %>% 
+  ggplot(aes(reorder(tumour_id, normal_contamination_estimate), normal_contamination_estimate)) + geom_bar(stat = "identity") +theme_bw()+labs(y="normal_contamination_estimate", x=" ")+
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=titan_params$tumour_id)
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/titan_params/contamination.pdf", plot=contamination,width=10, height=5, device="pdf")
+
+ploidy <- titan_params %>% 
+  ggplot(aes(reorder(tumour_id, average_tumour_ploidy_estimate), average_tumour_ploidy_estimate)) + geom_bar(stat = "identity") +theme_bw()+labs(y="average_tumour_ploidy_estimate", x=" ")+
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=titan_params$tumour_id)
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/titan_params/ploidy.pdf", plot=ploidy,width=10, height=5, device="pdf")
+
+```
+
+### Copy number abberations
+
+```{r}
+
+BCNA <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='BCNA' group by 1,2")
+BCNA <- as.data.frame(BCNA)
+
+HOMD <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='HOMD' group by 1,2")
+HOMD <- as.data.frame(HOMD)
+
+ALOH <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='ALOH' group by 1,2")
+ALOH <- as.data.frame(ALOH)
+
+DLOH <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='DLOH' group by 1,2")
+DLOH <- as.data.frame(DLOH)
+
+GAIN <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='GAIN' group by 1,2")
+GAIN <- as.data.frame(GAIN)
+
+ASCNA <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='ASCNA' group by 1,2")
+ASCNA <- as.data.frame(ASCNA)
+
+HET <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='HET' group by 1,2")
+HET <- as.data.frame(HET)
+
+NLOH <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='NLOH' group by 1,2")
+NLOH <- as.data.frame(NLOH)
+
+UBCNA <- dbGetQuery(con, "select distinct tumour_id, titan_call, count(tumour_id) from titan_segs where titan_call='UBCNA' group by 1,2")
+UBCNA <- as.data.frame(UBCNA)
+
+ all_cnas <- rbind(BCNA, HOMD, ALOH, DLOH,GAIN, ASCNA,HET,NLOH,UBCNA) 
+ 
+colourCount = length(unique(all_cnas$titan_call))
+getPalette = colorRampPalette(brewer.pal(8,"RdYlBu"))
+
+#cna props
+ cna1 <- all_cnas %>% 
+  ggplot(aes(tumour_id,count,fill = titan_call)) + 
+  geom_bar(aes(),position="fill",stat = "identity") +theme_bw()+labs(y="proportions")+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+  scale_x_discrete(breaks=all_cnas$tumour_id)+ 
+theme(legend.position="bottom")+scale_fill_manual(values = getPalette(colourCount))+labs(x="")+ scale_y_continuous(labels = function(x) paste0(x*100, "%"))
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/copy_number/cna1.pdf", plot=cna1,width=10, height=4, device="pdf")
+
+#cna boxplot
+box_titan <- all_cnas %>% 
+  ggplot(aes(reorder(titan_call, count),count)) +
+  geom_boxplot(fill=getPalette(colourCount))+
+  theme_bw()+
+  #geom_jitter(alpha=0.2)+
+  labs(y="counts",x=" ")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/copy_number/box_titan.pdf", plot=box_titan,width=7, height=4, device="pdf")
+
+#cnas overall distribution
+bar_cnas<- all_cnas %>% 
+  ggplot(aes(reorder(titan_call, count),count)) +
+  geom_col(color="gray35")+
+  theme_bw()+
+  labs(y="counts",x=" ")+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme(plot.title = element_text(hjust = 0.5), axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))
+ ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/copy_number/bar_cnas.pdf", plot=bar_cnas,width=7, height=4, device="pdf")
+
+top_row <- plot_grid(bar_cnas,box_titan , labels = c('A', 'B'), align = 'h', rel_heights = c(1,1.2))
+cnas_by_grid <- plot_grid(top_row, cna1,  labels = c('', 'C'), ncol = 1, rel_heights = c(1,1.2))
+
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/copy_number/cnas_by_grid.pdf", plot=cnas_by_grid,width=9, height=5, device="pdf")
+```
+
+### Trinucleotide distributions
+
+```{r}
+C_A <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect where pr >= 0.9 and ref='C' and alt ='A' group by tumour_id")
+C_A <- as.data.frame(C_A)
+C_T <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect  where pr >= 0.9 and  ref='C' and alt ='T' group by tumour_id")
+C_T <- as.data.frame(C_T)
+C_G <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect  where pr >= 0.9 and  ref='C' and alt ='G' group by tumour_id")
+C_G <- as.data.frame(C_G)
+T_C <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect  where pr >= 0.9 and   ref='T' and alt ='C' group by tumour_id")
+T_C <- as.data.frame(T_C)
+T_A <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect  where pr >= 0.9 and  ref='T' and alt ='A' group by tumour_id")
+T_A <- as.data.frame(T_A)
+T_G <- dbGetQuery(con, "select distinct tumour_id, count(distinct(tumour_id, chrom, pos)) from snvs_intersect  where pr >= 0.9 and  ref='T' and alt ='G' group by tumour_id")
+T_G <- as.data.frame(T_G)
+
+
+T1 <- T_G %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="darkolivegreen3")+labs(x=" ", y="T_G")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+T2 <- T_C %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="firebrick")+labs(x=" ", y="T_C")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+T3 <- T_A %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="deepskyblue2")+labs(x=" ", y="T_A")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+T4 <- C_G %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="black")+labs(x=" ", y="C_G")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+T5 <- C_A %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="gray70")+labs(x=" ", y="C_A")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+T6 <- C_T %>% ggplot(aes(tumour_id, count))+geom_bar(stat="identity", fill="rosybrown1")+labs(x=" ", y="C_T")+theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+ylim(c(0,12500))
+
+trinuc <- plot_grid(T1,T2,T3,T4,T5,T6, nrow=3, ncol=2)
+ ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/trinucl.pdf", plot=trinuc,width=7, height=4, device="pdf")
+
+
+C_T <- mutate(C_T, substitution="C_T")
+C_A <- mutate(C_A, substitution="C_A")
+C_G <- mutate(C_G, substitution="C_G")
+T_G <- mutate(T_G, substitution="T_G")
+T_C <- mutate(T_C, substitution="T_C")
+T_A <- mutate(T_A, substitution="T_A")
+
+trinucleotides <- rbind(C_T, C_A, C_G, T_G, T_C, T_A)
+
+box_tri <- trinucleotides %>% 
+  ggplot(aes(reorder(substitution, count), count)) +
+  geom_boxplot(fill = "gray90")+
+  theme_bw()+
+  geom_jitter(alpha=0.2)+
+  labs(y="counts",x="")+
+  theme(plot.title = element_text(hjust = 0.5))
+ ggsave("/Users/rasiimwe/Desktop/box_tri.pdf", plot=box_tri,width=7, height=4, device="pdf")
+
+
+bar_tri <- trinucleotides %>% 
+  ggplot(aes(reorder(substitution, count, fill=substitution), count)) +
+  geom_bar(color="gray35", stat="identity")+
+  theme_bw()+
+  labs(y="counts", x=" ")+
+  theme(plot.title = element_text(hjust = 0.5))
+ ggsave("/Users/rasiimwe/Desktop/bar_tri.pdf", plot=bar_tri,width=7, height=4, device="pdf")
+
+#ggplot(trinucleotides, aes(count))+ facet_wrap(~substitution, scales="free_x")+
+ # geom_histogram(aes(y=..density..),bins=50)+scale_size_area()+theme_bw()+geom_density(color="black")
+
+trinuc_grid <- plot_grid(bar_tri,trinuc, labels ="AUTO", align='v', rel_widths = c(1,1.4), rel_heights  = c(1,1))
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/trinuc_grid.pdf", plot=trinuc_grid,width=10, height=4, device="pdf")
+
+```
+
+```{r, fig.height=4}
+multi_bar_tri <- trinucleotides %>% 
+  ggplot(aes(tumour_id, count, fill=substitution))+
+  geom_bar(stat='identity')+
+  facet_grid(~substitution, scale='free_x')+
+  theme(axis.text.x=element_blank(),axis.ticks.x=element_blank())+labs(x=" ")
+ ggsave("/Users/rasiimwe/Desktop/multi_bar_tri.pdf", plot=multi_bar_tri,width=7, height=4, device="pdf")
+
+```
+
+### Oncoplots
+
+```{r, fig.width=10, fig.height=3}
+genes <- c("%,TP53%;","%,PIK3CA%;","%,PTEN%;","%,RB1%;","%,BRCA1%;","%,BRCA2%;","%,GATA3%;","%,ERBB2%;","%,USH2A%;","%,EGFR%;")
+genes <- as.vector(genes)
+#x=1
+#onco <- function(v){
+ # for(i in genes){
+ #   s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes[i]' ")
+ #   name <- str_sub(genes[i], 3)
+ #   name <- gsub('.{0,2}$', '', name) 
+  #  name <- dbGetQuery(con, s)
+  #  name <- as.data.frame(name)
+# #   name <- name %>% 
+# #          mutate(gene_name=name)
+ #   x<-x+1
+ #   }
+ #}
+#onco(genes)
+
+#--------------------------------------------------
+
+
+genes <- c("%,TP53%;","%,PIK3CA%;","%,PTEN%;","%,RB1%;","%,BRCA1%;","%,BRCA2%;","%,GATA3%;","%,ERBB2%;","%,USH2A%;","%,EGFR%;")
+genes <- as.vector(genes)
+
+genes <- "%,TP53%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+TP53 <- dbGetQuery(con, s)
+TP53 <- as.data.frame(TP53)
+TP53 <- TP53 %>% 
+  mutate(gene_name="TP53")
+
+genes <- "%,PIK3CA%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+PIK3CA <- dbGetQuery(con, s)
+PIK3CA <- as.data.frame(PIK3CA)
+PIK3CA <- PIK3CA %>% 
+  mutate(gene_name="PIK3CA")
+
+genes <- "%,PTEN%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+PTEN <- dbGetQuery(con, s)
+PTEN <- as.data.frame(PTEN)
+PTEN <- PTEN %>% 
+  mutate(gene_name="PTEN")
+
+genes <- "%,RB1%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+RB1 <- dbGetQuery(con, s)
+RB1 <- as.data.frame(RB1)
+RB1 <- RB1 %>% 
+  mutate(gene_name="RB1")
+
+genes <- "%,BRCA1%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+BRCA1 <- dbGetQuery(con, s)
+BRCA1 <- as.data.frame(BRCA1)
+BRCA1 <- BRCA1 %>% 
+  mutate(gene_name="BRCA1")
+
+
+genes <- "%,BRCA2%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+BRCA2 <- dbGetQuery(con, s)
+BRCA2 <- as.data.frame(BRCA2)
+BRCA2 <- BRCA2 %>% 
+  mutate(gene_name="BRCA2")
+
+genes <- "%,GATA3%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+GATA3 <- dbGetQuery(con, s)
+GATA3 <- as.data.frame(GATA3)
+GATA3 <- GATA3 %>% 
+  mutate(gene_name="GATA3")
+
+
+genes <- "%,ERBB2%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+ERBB2 <- dbGetQuery(con, s)
+ERBB2 <- as.data.frame(ERBB2)
+ERBB2 <- ERBB2 %>% 
+  mutate(gene_name="ERBB2")
+
+genes <- "%,EGFR%;"
+s <- fn$identity("select distinct tumour_id, titan_call from titan_segs where pygenes_gene_id_gene_name like '$genes' ")
+EGFR <- dbGetQuery(con, s)
+EGFR <- as.data.frame(EGFR)
+EGFR <- EGFR %>% 
+  mutate(gene_name="EGFR")
+
+onco <- rbind(TP53,PIK3CA,PTEN,RB1,BRCA1,BRCA2,GATA3,ERBB2,EGFR)
+onco <- onco[,c(1,3,2)]
+
+a=unique(onco)
+b=acast(a, gene_name~tumour_id)
+bb<-rowSums(b!=0)/dim(b)[2]
+
+
+colourCount = length(unique(a$titan_call))
+getPalette = colorRampPalette(brewer.pal(8,"RdYlBu"))
+
+onco_snvs <- a %>% 
+  ggplot() + geom_tile(aes(reorder(tumour_id,gene_name, fill = titan_call), titan_call))+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+theme_bw()+ labs(x="", y="")+theme( plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+theme(legend.position="bottom")+scale_fill_manual(name = "",values = alpha(c("#D73027", "#F0653F", "#FA9D59", "#FDCD7E", "#EFE9C4", "#CCE9F2", "dodgerblue4", "#6EA5CD", "gray80",  .2)))+labs(x="")
+ #blue orange red
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/snvs/onco_snvs.pdf", plot=onco_snvs,width=10, height=3, device="pdf")
+
+
+a %>% 
+  ggplot() + geom_tile(aes(x=tumour_id, y= titan_call, fill = gene_name))+ theme(axis.text.x = element_text(angle = 90, hjust = 1))+scale_fill_manual(values = getPalette(colourCount))+theme_bw()+ ggtitle("CNAs - gene mutation Per Case") +theme( plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+theme(legend.position="bottom")
+
+```
+
+
+### Genomic abberations - Consequences
+
+```{r,fig.width=10, fig.height=3}
+
+effects <- dbGetQuery(con, "select distinct tumour_id, gene_name, annotation from strelka_indels where (gene_name like 'TP53' or gene_name like 'PTEN' or gene_name like 'PIK3CA' or gene_name like 'EGFR' or gene_name like 'BRCA1' or gene_name like 'BRCA2' or gene_name like 'RB1' ) and (annotation like '%inframe%' or annotation like '%missense%' or annotation like '%gene_fusion%' or annotation like '%frameshift%' or annotation like '%splice_acceptor%' or annotation like '%splice_donor%' or annotation like '%stop_lost%' or annotation like '%stop_gained%' or annotation like '%start_lost%') union select distinct tumour_id, gene_name, annotation from snvs_intersect where (gene_name like 'TP53' or gene_name like 'PTEN' or gene_name like 'PIK3CA' or gene_name like 'EGFR' or gene_name like 'BRCA1' or gene_name like 'BRCA2' or gene_name like 'RB1') and pr>0.9 and (annotation like '%inframe%' or annotation like '%missense%' or annotation like '%gene_fusion%' or annotation like '%frameshift%' or annotation like '%splice_acceptor%' or annotation like '%splice_donor%' or annotation like '%stop_lost%' or annotation like '%stop_gained%' or annotation like '%start_lost%') order by gene_name asc")
+
+effects <- cSplit(effects, 3, sep = "&", direction = "wide", fixed = FALSE, drop = TRUE, stripWhite = TRUE, makeEqual =TRUE,  type.convert = TRUE)
+
+effects[,c(4:6)] <- NULL
+
+a=unique(effects)
+names(a)[names(a)=='annotation_1'] <- 'annotation'
+b=acast(a, gene_name~tumour_id)
+bb<-rowSums(b!=0)/dim(b)[2]
+
+colourCount = length(unique(a$annotation))
+getPalette = colorRampPalette(brewer.pal(10, "RdYlBu"))
+
+a$gene_name <- factor(a$gene_name, levels = names(sort(rowSums(b))))
+library(tidyverse)
+
+onco_cna <-  a %>%  mutate(annotation==fct_reorder(annotation)) %>% 
+  ggplot() + 
+    geom_tile(aes(x=tumour_id, y=gene_name, fill = annotation))+ 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.line = element_line(colour = "black"),panel.background = element_rect(fill = "gray100", colour = "gray100"), panel.grid.major = element_line(colour = "gray85"))+
+    scale_fill_manual(values = getPalette(colourCount))+
+  theme_bw() +
+  theme( plot.title = element_text(hjust=0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+
+  theme(legend.position="bottom")+labs(x="", y="")
+ ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/copy_number/onco_cna.pdf", plot=onco_cna,width=8, height=3, device="pdf")
+
+```
+
+### Annotation_impact='HIGH' or 'MODERATE' - not needed same plot
+
+```{r, fig.width=10, fig.height=3}
+
+effects2 <- dbGetQuery(con, "select distinct tumour_id, gene_name, annotation from strelka_indels where (gene_name like 'TP53' or gene_name like 'PTEN' or gene_name like 'PIK3CA' or gene_name like 'EGFR' or gene_name like 'BRCA1' or gene_name like 'BRCA2' ) and (annotation_impact='HIGH' or annotation_impact='MODERATE') union select distinct tumour_id, gene_name, annotation from snvs_intersect where (gene_name like 'TP53' or gene_name like 'PTEN' or gene_name like 'PIK3CA' or gene_name like 'EGFR' or gene_name like 'BRCA1' or gene_name like 'BRCA2') and pr>0.9 and (annotation_impact='HIGH' or annotation_impact='MODERATE') ")
+
+
+effects<-cSplit(effects2, 3, sep = "&", direction = "long", fixed = FALSE, drop = TRUE, stripWhite = TRUE, makeEqual =TRUE,  type.convert = TRUE)
+effects <- na.omit(effects)
+ 
+#effects[,c(4:6)] <- NULL
+
+#a=unique(effects)
+a <- effects
+names(a)[names(a)=='annotation_1'] <- 'annotation'
+b=acast(a, gene_name~tumour_id)
+bb<-rowSums(b!=0)/dim(b)[2]
+
+colourCount = length(unique(a$annotation))
+getPalette = colorRampPalette(brewer.pal(10, "RdYlBu"))
+
+a$gene_name <- factor(a$gene_name, levels = names(sort(rowSums(b))))
+
+(plot2<-ggplot(data = a) + geom_tile(aes(x=tumour_id, y=gene_name, fill = annotation))+ theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.line = element_line(colour = "black"),panel.background = element_rect(fill = "gray100", colour = "gray100"), panel.grid.major = element_line(colour = "gray85"))+scale_fill_manual(values = getPalette(colourCount)))+theme_bw()+theme( plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+theme(legend.position="bottom")
+
+
+```
+
+trying to reorder
+```{r}
+
+a1 <- a
+#unique(a1$annotation)
+levels(a1)[levels(a1)=="stop_lost"] <- 1
+levels(a1)[levels(a1)=="stop_gained"] <- 2
+levels(a1)[levels(a1)=="missense_variant"] <- 3
+levels(a1)[levels(a1)=="splice_acceptor_variant"] <- 4
+levels(a1)[levels(a1)=="splice_donor_variant"] <- 5
+levels(a1)[levels(a1)=="frameshift_variant"] <- 6
+levels(a1)[levels(a1)=="disruptive_inframe_deletion"] <- 7
+
+library(plyr)
+mapvalues(a1, from = c(1, 2), to = c("stop_lost", "stop_gained"))
+
+(plot2<-a1 %>% ggplot()+geom_tile(aes(reorder(tumour_id, gene_name, fill = annotation), annotation))+ theme(axis.text.x = element_text(angle = 90, hjust = 1), axis.line = element_line(colour = "black"),panel.background = element_rect(fill = "gray100", colour = "gray100"), panel.grid.major = element_line(colour = "gray85"))+scale_fill_manual(values = getPalette(colourCount)))+theme_bw()+theme( plot.title = element_text(hjust = 0.5),axis.text.x=element_text(angle=90,hjust=1,vjust=0.5))+theme(legend.position="bottom")
+ggsave("/Users/rasiimwe/Desktop/tnbc_downstream_plots/snvs/onco_snvs.pdf", plot=onco_snvs,width=10, height=3, device="pdf")
+```
+
+
+### Clinical - node status vs overall survival
+
+```{r, fig.width=7, fig.height=4}
+#install.packages(c("survival", "survminer"))
+clinical <- dbGetQuery(con, "select * from clinical, samples where clinical.tumour_id=samples.tumour_id and clinical.tumour_id=samples.tumour_id")
+clinical <- clinical[6:23]
+clinical[3:4]<- NULL
+clinical[13:14]<- NULL
+clinical <- na.omit(clinical)
+
+clinical$os_status <- as.character(clinical$os_status)
+clinical$os_status[clinical$os_status == "alive"] <- 1
+clinical$os_status[clinical$os_status == "dead"] <- 0
+clinical$os_status <- as.numeric(clinical$os_status)
+clinical$age <- as.character(clinical$age)
+clinical$age[clinical$age > 60] <- 1
+clinical$age[clinical$age > 1] <- 0
+clinical$age <- as.numeric(clinical$age)
+clinical<-as.data.frame(clinical)
+
+fit <- survfit(Surv(os_years, os_status ) ~ node_status, data = clinical, conf.type = "log-log")
+print(fit)
+
+d <- data.frame(time = fit$time,
+                  n.risk = fit$n.risk,
+                  n.event = fit$n.event,
+                  n.censor = fit$n.censor,
+                  surv = fit$surv,
+                  upper = fit$upper,
+                  lower = fit$lower
+                  )
+
+#customising
+node_status <- ggsurvplot(
+   fit,  
+   main="node status vs overall survival",# survfit object with calculated statistics.
+   #pval = TRUE,             # show p-value of log-rank test.
+   #conf.int = TRUE,         # show confidence intervals for 
+     #legend.title= " ",                       # point estimaes of survival curves.
+   #conf.int.style = "step",  # customize style of confidence intervals
+    legend.title= "Logrank p=0.0001",  
+   legend.labs = c("node_negative (n=41)", "node_positive (n=27)"),
+   ylab="Survival Probability - node_status",
+   xlab = "Overall Survival(years)",   # customize X axis label.
+   break.time.by = 5,     # break X axis in time intervals by 200.
+   ggtheme = theme_classic() +theme(plot.title = element_text(hjust = 0.5, face = "bold")), # customize plot and risk table with a theme.
+  # risk.table = "abs_pct",  # absolute number and percentage at risk.
+  #risk.table.y.text.col = T,# colour risk table text annotations.
+ # risk.table.y.text = FALSE,# show bars instead of names in text annotations
+                            # in legend of risk table.
+  #ncensor.plot = TRUE,      # plot the number of censored subjects at time t
+  surv.median.line = "hv",
+  legend = c(0.8, 0.7),# add the median survival pointer.
+  #legend.labs =c("FBI&COSMIC1+5", "HRD","FRAMESHIFTS"),    # change legend labels.
+  palette = c("red3", "steelblue3","gray")
+  ) # custom color palettes.
+ # dev.copy2pdf(file="/Users/rasiimwe/Desktop/survivalALL2.pdf", width=10, height=7)
+ggsave(file = "/Users/rasiimwe/Desktop/node_status.png", print(node_status), width=9, height=6)
+
+
+
+```
+
+
+
+### Node status, tumour_size and overall survival
+
+```{r,fig.width=7, fig.height=4}
+fit <- survfit(Surv(tum_size, os_status ) ~ node_status, data = clinical, conf.type = "log-log")
+print(fit)
+
+d <- data.frame(time = fit$time,
+                  n.risk = fit$n.risk,
+                  n.event = fit$n.event,
+                  n.censor = fit$n.censor,
+                  surv = fit$surv,
+                  upper = fit$upper,
+                  lower = fit$lower
+                  )
+#customising
+tum_nod<-ggsurvplot(
+   fit,    # survfit object with calculated statistics.
+   main="node status, tumour_size and overall survival",
+  # pval = TRUE,             # show p-value of log-rank test.
+   #conf.int = TRUE,         # show confidence intervals for 
+                            # point estimaes of survival curves.
+   #conf.int.style = "step",  # customize style of confidence intervals
+   legend.title= "Logrank p=0.0001",  
+   legend.labs = c("node_negative (n=41)", "node_positive (n=27)", "unknown (n=1)"),
+   ylab="Survival Probability, tum_size ~ node status",
+   xlab = "Overall Survival(years)",   # customize X axis label.
+   break.time.by = 5,     # break X axis in time intervals by 200.
+   ggtheme = theme_classic(), # customize plot and risk table with a theme.
+  surv.median.line = "hv",  # add the median survival pointer.
+  legend = c(0.8, 0.8),
+   risk.table.y.text = TRUE,# add the median survival pointer.
+  #legend.labs =c("FBI&COSMIC1+5", "HRD","FRAMESHIFTS"),    # change legend labels.
+  palette = c("red3", "steelblue3","gray")
+  ) 
+ggsave(file = "/Users/rasiimwe/Desktop/tum_nod.png", print(tum_nod), width=9, height=6)
+
+
+```
+
+### Cohort age ranges 
+
+```{r}
+clinical <- dbGetQuery(con, "select * from clinical, samples where clinical.tumour_id=samples.tumour_id and clinical.tumour_id=samples.tumour_id")
+clinical <- clinical[6:23]
+clinical[3:4]<- NULL
+clinical[13:14]<- NULL
+clinical <- na.omit(clinical)
+
+
+hist(clinical$age,nclass = 4,xlab = "age",main = "Histogram of TNBC ages")
+
+age <- hist(clinical$age, freq=FALSE, nclass = 4,xlab = "age distribution", col ="gray70")
+lines(density(clinical$age),
+     # bw=1,# density plot
+ lwd = 2, # thickness of line
+ col = "steelblue4")
+dev.copy2pdf(file="/Users/rasiimwe/Desktop/age.pdf", width = 5, height = 4)
+min(clinical$age) #- 26
+max(clinical$age) #- 82
+mean(clinical$age) #- 53.48
+```
+
+
+```{r, fig.width=7, fig.height=4}
+b2<- t(b)
+b2<-as.data.frame(b2)
+b2<- b2 %>% tibble::rownames_to_column()
+names(b2)[1]<-"tumour_id"
+
+comb <- full_join(clinical, b2, by="tumour_id")
+comb <- comb[1:69, ]
+
+comb[is.na(comb)] <- 0
+
+comb$os_status <- as.character(comb$os_status)
+comb$os_status[comb$os_status == "alive"] <- 1
+comb$os_status[comb$os_status == "dead"] <- 0
+comb$os_status <- as.numeric(comb$os_status)
+comb$age <- as.character(comb$age)
+comb$age[comb$age > 60] <- 1
+comb$age[comb$age > 1] <- 0
+comb$age <- as.numeric(comb$age)
+comb<-as.data.frame(comb)
+
+comb$BRCA1[comb$BRCA1 > 1] <- 1
+comb$BRCA2[comb$BRCA2 > 1] <- 1
+comb$EGFR[comb$EGFR > 1] <- 1
+comb$PIK3CA[comb$PIK3CA > 1] <- 1
+comb$PTEN[comb$PTEN > 1] <- 1
+comb$TP53[comb$TP53 > 1] <- 1
+comb <-comb %>%  mutate(B1T = BRCA1+TP53)
+comb$B1T[comb$B1T < 2] <- 0
+comb$B1T[comb$B1T >= 2] <- 1
+#comb$B1T[comb$B1T < 2] <- 0
+
+
+fit <- survfit(Surv(os_years, os_status ) ~ PIK3CA, data = comb, conf.type = "log-log")
+print(fit)
+
+d <- data.frame(time = fit$time,
+                  n.risk = fit$n.risk,
+                  n.event = fit$n.event,
+                  n.censor = fit$n.censor,
+                  surv = fit$surv,
+                  upper = fit$upper,
+                  lower = fit$lower
+                  )
+
+#customising
+par(mfrow=c(3,1))
+pik3ca<- ggsurvplot(
+   fit,                     # survfit object with calculated statistics.
+   #pval = TRUE,             # show p-value of log-rank test.
+   #conf.int = TRUE,         # show confidence intervals for 
+     legend.title= "Logrank p=0.33",  
+   legend.labs = c("PIK3CA wild type (n=58)", "PIK3CA mutant (n=11)"),# point estimaes of survival curves.
+   #conf.int.style = "step",  # customize style of confidence intervals
+   ylab="Survival Probability ",
+   xlab = "Overall Survival(years)",   # customize X axis label.
+   break.time.by = 5,     # break X axis in time intervals by 200.
+   ggtheme = theme_classic() +theme(plot.title = element_text(hjust = 0.5, face = "bold")), # customize plot and risk table with a theme.
+  # risk.table = "abs_pct",  # absolute number and percentage at risk.
+ # risk.table.y.text.col = T,# colour risk table text annotations.
+ # risk.table.y.text = FALSE,# show bars instead of names in text annotations
+                            # in legend of risk table.
+  #ncensor.plot = TRUE,      # plot the number of censored subjects at time t
+  surv.median.line = "hv",
+  legend = c(0.8, 0.8),# add the median survival pointer.
+  #legend.labs =c("FBI&COSMIC1+5", "HRD","FRAMESHIFTS"),    # change legend labels.
+  palette = c("red3", "steelblue3","gray")
+  ) # custom color palettes.
+ ggsave(file = "/Users/rasiimwe/Desktop/pik3ca.png", print(pik3ca), width=9, height=6)
+
+
+```
+
+```{r}
+fit <- survfit(Surv(os_years, os_status ) ~ age, data = comb, conf.type = "log-log")
+print(fit)
+
+d <- data.frame(time = fit$time,
+                  n.risk = fit$n.risk,
+                  n.event = fit$n.event,
+                  n.censor = fit$n.censor,
+                  surv = fit$surv,
+                  upper = fit$upper,
+                  lower = fit$lower
+                  )
+
+#customising
+par(mfrow=c(3,1))
+ggsurvplot(
+   fit,                     # survfit object with calculated statistics.
+   pval = TRUE,             # show p-value of log-rank test.
+   #conf.int = TRUE,         # show confidence intervals for 
+                            # point estimaes of survival curves.
+   #conf.int.style = "step",  # customize style of confidence intervals
+   ylab="Survival Probability  ~ BRCA1",
+   xlab = "Overall Survival in years",   # customize X axis label.
+   break.time.by = 5,     # break X axis in time intervals by 200.
+   ggtheme = theme_classic(), # customize plot and risk table with a theme.
+  surv.median.line = "hv",  # add the median survival pointer.
+    legend = c(0.8, 0.7),# add the median survival pointer.
+  #legend.labs =c("FBI&COSMIC1+5", "HRD","FRAMESHIFTS"),    # change legend labels.
+  palette = c("red3", "steelblue3","gray")
+  ) # custom color palettes.
+```
+
+### Tumour_size vs node status
+
+```{r, fig.width=6, fig.height=4}
+
+comb$node_status[comb$node_status =="unkown"] <- "negative"
+
+#comb %>% 
+  #ggplot(aes(os_years, tum_size, fill=node_status))+
+ # geom_point(alpha=0.2)+
+ # geom_smooth(method="lm")+
+ # labs(x="overal survival (years)", y="tumour_size (cm)")
+
+tum_nod<-comb %>% 
+  ggplot(aes(os_years, tum_size, fill=node_status))+
+  geom_point(aes(size=tum_size, fill=node_status), shape=21, color="black", alpha=0.2)+
+  geom_smooth(method="lm", color="black", size=0.5)+
+  labs(x="overal survival (years)", y="tumour_size (cm)")
+ ggsave("/Users/rasiimwe/Desktop/tum_nod.pdf", plot=tum_nod,width=7, height=4, device="pdf")
+
+
+```
+
+```{r}
+comb4 <- comb
+comb4$node_status[comb4$node_status  == "negative"] <- 1
+comb4$node_status[comb4$node_status =="positive"] <- 2
+comb4$node_status[comb4$node_status =="unknown"] <- 3
+
+comb4 %>% 
+  ggplot(aes(node_status, tum_size))+geom_point()
+```
+
+To save use:
+#saveRDS(snvs,"snvs.rds", compress=FALSE)
+#saveRDS(breakpoints,"breakpoints.rds", compress=FALSE)
+#saveRDS(indels,"indels.rds", compress=FALSE)
+
+
+#snvs <- readRDS("snvs.rds")
+#breakpoints <- readRDS("breakpoints.rds")
+#indels <- readRDS("indels.rds")
+
+```{r}
+#select patients with pik3ca / without mut node status
+comb_bup <- comb
+comb <- comb_bup
+comb <- na.omit(comb)
+comb$grade[comb$grade == "unknown"] <- 0
+names(comb)[18]<-"PIK3CA1"
+#dat2 <- data.frame(car = rownames(mtcars), mtcars, row.names = NULL)
+
+comb <- comb %>% mutate(diff=tum_size-3, PIK3CA=if_else(PIK3CA1==0,"wilde type", "mutant"))
+comb <- comb %>% mutate(ages=if_else(age>=60,"age>60", "age<60"))
+comb <- comb %>% mutate(age_diff=age-60)
+comb$grade <- as.numeric(comb$grade)
+comb <- comb %>% mutate(grade_diff=grade-2.1)
+
+comb <- comb[-c(8), ]
+comb <- comb[-c(12), ]
+
+#age
+age_diff <- comb %>% ggplot(aes(reorder(tumour_id,age_diff, label=tumour_id),age_diff)) + geom_col(aes(fill=PIK3CA), width = 0.1) +coord_flip() +scale_fill_manual(values = alpha(c("firebrick", "steelblue"), .9))+labs(y="60> age > 60", x=" ")
+ ggsave("/Users/rasiimwe/Desktop/age_diff.pdf", plot=age_diff,width=6, height=7, device="pdf")
+
+#tum_size
+tum_size_diff <- comb %>% ggplot(aes(reorder(tumour_id,diff, label=tumour_id),diff)) + geom_col(aes(fill=PIK3CA), width = 0.1) +     coord_flip() +scale_fill_manual(values = alpha(c("firebrick", "steelblue"), .9))+labs(y="3> tumour_size > 3", x=" ")
+ ggsave("/Users/rasiimwe/Desktop/tum_size_diff.pdf", plot=tum_size_diff,width=6, height=7, device="pdf")
+
+
+#grade
+grade_diff <- comb %>% ggplot(aes(reorder(tumour_id,grade_diff, label=tumour_id),grade_diff)) + geom_col(aes(fill=PIK3CA), width = 0.1) +     coord_flip() +scale_fill_manual(values = alpha(c("firebrick", "steelblue"), .9))+labs(y="3> grade == 3", x=" ")
+ ggsave("/Users/rasiimwe/Desktop/grade_diff.pdf", plot=grade_diff,width=6, height=7, device="pdf")
+
+
+
+
+grade <- comb[c(1,4)]
+grade <- mutate(grade, event="grade")
+names(grade)[2]<-"value"
+grade <- cbind(grade, comb[c(15, 18:20)])
+grade$BRCA1[grade$BRCA1 == 0] <- " "
+grade$BRCA1[grade$BRCA1 >= 1] <- "BRCA1"
+
+grade$PIK3CA1[grade$PIK3CA1 == 0] <- " "
+grade$PIK3CA1[grade$PIK3CA1 == 1] <- "PIK3CA"
+
+grade$PTEN[grade$PTEN == 0] <- " "
+grade$PTEN[grade$PTEN == 1] <- "PTEN"
+
+grade$RB1[grade$RB1 == 0] <- " "
+grade$RB1[grade$RB1 == 1] <- "RB1"
+grade$RB1 <- NULL
+grade$genes <- paste(grade$BRCA1,grade$PIK3CA1, grade$PTEN)
+
+#grade1 <- grade[c(1, 4:7)]
+
+#grade1 <- gather(grade1, "gene", 2:5)
+
+
+tum_size <- comb[c(1,5)]
+tum_size <- mutate(tum_size, event="tum_size")
+names(tum_size)[2]<-"value"
+
+age<-comb[c(1,3)]
+age <- mutate(age, event="age")
+names(age)[2]<-"value"
+
+node_status1 <- comb[c(1,6)]
+node_status1 <- mutate(node_status1, event="node_status")
+node_status1$node_status[node_status1$node_status == "unkown"] <- 0
+node_status1$node_status[node_status1$node_status == "negative"] <- 1
+node_status1$node_status[node_status1$node_status == "positive"] <- 2
+names(node_status1)[2]<-"value"
+
+
+facet_clinical<- rbind(grade, tum_size, age, node_status1)
+
+grd <- grade %>% 
+  ggplot(aes(reorder(tumour_id, value),value))+ 
+  facet_grid(~ genes, scales="free_x")+
+  geom_bar(stat="identity") +
+ scale_size_area()+theme_bw()+
+labs(y="grade", x="")+coord_flip()
+ ggsave("/Users/rasiimwe/Desktop/grade.pdf", plot=grd,width=5, height=6, device="pdf")
+
+
+#TRY THE BELOW
+grade %>% 
+  ggplot(aes(tumour_id, value, fill = value)) + 
+  geom_bar(stat="identity") +
+  facet_wrap(~ genes) #+
+  #scale_fill_manual(values = c("blue2", "steelblue3","firebrick","cyan", "darkblue")) +
+  labs(y="GDP per capita", x="Continent") +
+  theme_bw() +coord_flip()
+ 
+
+```
+
