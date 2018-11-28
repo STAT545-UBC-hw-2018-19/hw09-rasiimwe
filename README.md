@@ -39,5 +39,6 @@ The output of `merger.py` file is [dataset_merge.txt](https://github.com/STAT545
 
 ### Sources to Acknowledge:
 [STAT 5457M notes on automating Data-analysis Pipelines](http://stat545.com/automation04_make-activity.html)
+
 [Text mining and word cloud fundamentals in R : 5 simple steps you should know](http://www.sthda.com/english/wiki/text-mining-and-word-cloud-fundamentals-in-r-5-simple-steps-you-should-know)
 
