@@ -25,7 +25,13 @@ The pipeline starts with a [python component seed](https://github.com/STAT545-UB
 
 The output of `merger.py` file is [dataset_merge.txt](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/files/dataset_merge.txt). This output file is then fed into the [trump_words.R](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/trump_words.R) file that does required analyses on `dataset_merge.txt` and generates required plots as shown in the [md file](https://github.com/STAT545-UBC-students/hw09-rasiimwe/blob/master/trump_words.md). This md file was entirely generated for visualization.
 
-### Please install these required packages
+### For the pipeline to run, please note the following: 
+
+1. **Install python** using any of the methods specified [here](https://www.python.org) or [here](https://realpython.com/installing-python/) based on your operating system
+
+2. Change the path in the `merger.py` file: `path="/Users/rasiimwe/hw09-rasiimwe/files/"` to align with your system path
+
+### Install required packages
 ```r
 install.packages("tm")  # to support text mining
 install.packages("SnowballC") # to support text stemming
