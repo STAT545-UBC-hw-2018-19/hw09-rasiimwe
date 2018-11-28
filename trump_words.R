@@ -57,7 +57,7 @@ set.seed(1234)
 cloud <- wordcloud(words = word_freq$word, freq = word_freq$freq, min.freq = 1,
 					max.words=200, random.order=FALSE, rot.per=0.35, 
 					colors=brewer.pal(8, "Dark2"), size=3)
-dev.copy2pdf(file="cloud.pdf", width = 3, height = 3)
+#dev.copy2pdf(file="files/cloud.pdf", width = 3, height = 3) #used to render cloud
 
 
 common_words <- tweets2 %>%
@@ -68,7 +68,7 @@ common_words <- tweets2 %>%
 	mutate(word = reorder(word, n))
 
 
-write.table(common_words, "files/common_words.tsv",
+write.table(common_words, "common_words.tsv",
 	sep = "\t", row.names = FALSE, quote = FALSE)
 
 bar_plot <- common_words %>%  ggplot(aes(word, n)) +
@@ -81,6 +81,6 @@ bar_plot <- common_words %>%  ggplot(aes(word, n)) +
 	theme_bw() +
 	theme(plot.title = element_text(hjust = 0.5))
 
-ggsave("bar_plot.png", bar_plot)
+#ggsave("files/bar_plot.png", bar_plot) 
 
 
